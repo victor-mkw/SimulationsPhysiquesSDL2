@@ -33,6 +33,11 @@ void FenetrePrincipale::initialiserFenetre() {
 	}
 	// Sinon on créer la surface pour notre fenêtre
 	_surface = SDL_GetWindowSurface(_fenetre);
+	if (!_surface) {
+		std::cout << "Erreur création de la surface" << std::endl;
+		SDL_DestroyWindow(_fenetre);
+		SDL_Quit();
+	}
 }
 
 void FenetrePrincipale::boucleFenetre() {
