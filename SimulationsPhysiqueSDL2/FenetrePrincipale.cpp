@@ -3,6 +3,8 @@
 FenetrePrincipale::FenetrePrincipale() {
 	_fenetre = nullptr;
 
+	_surface = nullptr;
+
 	_largeur = 1024;
 	_hauteur = 720;
 
@@ -29,13 +31,18 @@ void FenetrePrincipale::initialiserFenetre() {
 		std::cout << "Erreur création de la fenêtre" << std::endl;
 		SDL_Quit();
 	}
+	// Sinon on créer la surface pour notre fenêtre
+	_surface = SDL_GetWindowSurface(_fenetre);
 }
 
 void FenetrePrincipale::boucleFenetre() {
 	// Cette boucle remplace l'utilisation de l'attente d'une entrée sur le cmd
 	while (_fenetreEtat == Etat::EN_COURS) {
 		evenementFenetre();
+		colorierFenetre();
 	}
+	// Libère la mémoire allouée pour la fenêtre et toutes ses ressources (dont la surface)
+	SDL_DestroyWindow(_fenetre);
 }
 
 void FenetrePrincipale::evenementFenetre() {
@@ -48,4 +55,13 @@ void FenetrePrincipale::evenementFenetre() {
 			break;
 		}
 	}
+}
+
+void FenetrePrincipale::colorierFenetre() {
+	// Le nom est assez clair, les paramètres moins : prend la surface sur la quelle dessiner, un pointeur sur SDL_Rect 
+	// (si mis à NULL la fenêtre entière est colorée), puis un indicateur de couleur
+	SDL_FillRect(_surface, NULL, SDL_MapRGB(_surface->format, 255, 0, 0));
+
+	// Met à jour la fenêtre avec la surface modifiée
+	SDL_UpdateWindowSurface(_fenetre);
 }

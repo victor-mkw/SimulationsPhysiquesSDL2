@@ -25,10 +25,16 @@ public:
 	// Méthode qui gère les entrées/sorties en liens avec la fenêtre
 	void evenementFenetre();
 
+	// Méthode qui attribue une couleur à la fenêtre
+	void colorierFenetre();
+
 private:
 
 	// Fenêtre sur laquelle se feront les affichages des I/O multimédias 
 	SDL_Window* _fenetre;
+
+	// Une surface est une manière d'afficher les éléments par rendu logiciel (aucune utilisation de la carte graphique pour ce dernier)
+	SDL_Surface* _surface;
 
 	// Dimensions de la fenêtre
 	int _largeur;
