@@ -1,9 +1,11 @@
 #include "FenetrePrincipale.h"
 
+static SDL_Rect r;
+
 FenetrePrincipale::FenetrePrincipale() {
 	_fenetre = nullptr;
 
-	_surface = nullptr;
+	_moteurRendu = nullptr;
 
 	_largeur = 1024;
 	_hauteur = 720;
@@ -31,17 +33,28 @@ void FenetrePrincipale::initialiserFenetre() {
 		std::cout << "Erreur création de la fenêtre" << std::endl;
 		SDL_Quit();
 	}
-	// Sinon on créer la surface pour notre fenêtre
-	_surface = SDL_GetWindowSurface(_fenetre);
+	_moteurRendu = SDL_CreateRenderer(_fenetre, -1, SDL_RENDERER_ACCELERATED);
+	if (!_moteurRendu) {
+		std::cout << "Erreur création du moteur de rendu" << std::endl;
+		SDL_Quit();	
+	}
+
+	SDL_SetRenderDrawColor(_moteurRendu, 255, 255, 255, 255);
+	SDL_RenderClear(_moteurRendu);
 }
 
 void FenetrePrincipale::boucleFenetre() {
+	SDL_SetRenderDrawColor(_moteurRendu, 255, 255, 255, 255);
+	SDL_RenderClear(_moteurRendu);
 	// Cette boucle remplace l'utilisation de l'attente d'une entrée sur le cmd
 	while (_fenetreEtat == Etat::EN_COURS) {
 		evenementFenetre();
-		colorierFenetre();
+
+		SDL_RenderPresent(_moteurRendu);
 	}
-	// Libère la mémoire allouée pour la fenêtre et toutes ses ressources (dont la surface)
+	// Libère la mémoire allouée pour le moteur de rendu
+	SDL_DestroyRenderer(_moteurRendu);
+	// Libère la mémoire allouée pour la fenêtre et toutes ses ressources
 	SDL_DestroyWindow(_fenetre);
 }
 
@@ -53,15 +66,39 @@ void FenetrePrincipale::evenementFenetre() {
 		case SDL_QUIT:
 			_fenetreEtat = Etat::ARRET;
 			break;
+
+		case SDL_KEYDOWN:
+			switch (event.key.keysym.scancode) {
+			case SDL_SCANCODE_SPACE:
+				SDL_SetRenderDrawColor(_moteurRendu, 255, 0, 0, 255);
+
+				r.x = 500;
+				r.y = 300;
+				r.w = 200;
+				r.h = 200;
+
+				SDL_RenderFillRect(_moteurRendu, &r);
+				break;
+
+			case SDL_SCANCODE_BACKSPACE:
+				SDL_SetRenderDrawColor(_moteurRendu, 0, 0, 255, 255);
+
+				r.x = 500;
+				r.y = 300;
+				r.w = 200;
+				r.h = 200;
+
+				SDL_RenderFillRect(_moteurRendu, &r);
+				break;
+			}
+		case SDL_MOUSEMOTION:
+			break;
+
 		}
+		
 	}
 }
 
 void FenetrePrincipale::colorierFenetre() {
-	// Le nom est assez clair, les paramètres moins : prend la surface sur la quelle dessiner, un pointeur sur SDL_Rect 
-	// (si mis à NULL la fenêtre entière est colorée), puis un indicateur de couleur
-	SDL_FillRect(_surface, NULL, SDL_MapRGB(_surface->format, 255, 0, 0));
-
-	// Met à jour la fenêtre avec la surface modifiée
-	SDL_UpdateWindowSurface(_fenetre);
+	NULL;
 }

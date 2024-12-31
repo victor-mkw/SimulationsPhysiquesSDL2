@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <SDL.h>
+#include "Player.h"
 
 enum Etat { EN_COURS, ARRET };
 
@@ -33,8 +34,8 @@ private:
 	// Fenêtre sur laquelle se feront les affichages des I/O multimédias 
 	SDL_Window* _fenetre;
 
-	// Une surface est une manière d'afficher les éléments par rendu logiciel (aucune utilisation de la carte graphique pour ce dernier)
-	SDL_Surface* _surface;
+	// La structure SDL_Renderer contient tous les paramètres nécéssaires au rendu graphique et les instructions d'affichage
+	SDL_Renderer* _moteurRendu;
 
 	// Dimensions de la fenêtre
 	int _largeur;
